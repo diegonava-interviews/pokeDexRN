@@ -6,4 +6,6 @@ export const authRoutes = {
   AUTHENTICATED: 'Authenticated',
   REGIONS: 'Regions',
   TEAMS: 'Teams',
+  POKEDEXS: 'Pokedexs',
+  POKEMONS: 'Pokemons',
 };

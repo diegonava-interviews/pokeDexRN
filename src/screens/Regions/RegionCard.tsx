@@ -1,21 +1,14 @@
 import * as React from 'react';
 import {TouchableOpacity} from 'react-native';
 
-import {Div, Text, Image} from 'react-native-magnus';
+import {Div, Text, Icon} from 'react-native-magnus';
 
 interface RegionCardProps {
-  image: string;
   name: string;
-  url: string;
   onPress: () => void;
 }
 
-export default function RegionCard({
-  url,
-  image,
-  name,
-  onPress = () => console.log(url),
-}: RegionCardProps) {
+export default function RegionCard({name, onPress}: RegionCardProps) {
   return (
     <TouchableOpacity onPress={onPress}>
       <Div
@@ -23,19 +16,22 @@ export default function RegionCard({
         alignItems="center"
         shadow="lg"
         shadowColor="white"
-        p="lg">
+        bg="pokemonLightBlue"
+        w={150}
+        rounded="lg"
+        py="lg"
+        my="lg">
         <Text fontWeight="600" color="white" fontSize="lg" textAlign="center">
           {name}
         </Text>
 
         <Div pb="xs" />
 
-        <Image
-          h={100}
-          w={100}
-          source={{
-            uri: image,
-          }}
+        <Icon
+          name={'map-pin'}
+          color={'white'}
+          fontFamily={'Feather'}
+          fontSize="3xl"
         />
       </Div>
     </TouchableOpacity>

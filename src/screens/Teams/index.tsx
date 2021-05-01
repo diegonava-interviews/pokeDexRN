@@ -2,75 +2,68 @@ import * as React from 'react';
 import auth from '@react-native-firebase/auth';
 
 import {SafeAreaView, ScrollView} from 'react-native';
-import {Div, Text} from 'react-native-magnus';
+import {Div} from 'react-native-magnus';
 
 import FilledButton from '../../components/Button';
-import RegionCard from './RegionCard';
+import CustomAlert from '../../components/CustomAlert';
+import CustomText from '../../components/CustomText';
+import TeamCard from './TeamCard';
 
-export default function Teams() {
+import teamsMock from './data';
+import {authRoutes} from '../../constants/navigation';
+
+export default function Teams({navigation}: any) {
+  const [teams, setTeams] = React.useState(teamsMock);
+  const [teamToDelete, setTeamToDelete] = React.useState(-1);
+
   const handleLogout = async () => {
     auth().signOut();
   };
 
-  const regions = [
-    {
-      name: 'Namek Team',
-      region: 'Kanto',
-      pokemons: [{}],
-      description: '',
-      owner: {
-        name: '',
-        emai: '',
-        photo: '',
-      },
-    },
-    {
-      name: 'Pelu Team',
-      region: 'Johto',
-      pokemons: [{}],
-      description: '',
-      owner: {
-        name: '',
-        emai: '',
-        photo: '',
-      },
-    },
-    {
-      name: 'Eldia Team',
-      region: 'Hoenn',
-      pokemons: [{}],
-      description: '',
-      owner: {
-        name: '',
-        emai: '',
-        photo: '',
-      },
-    },
-    {
-      name: 'Saya Team',
-      region: 'Sinnoh',
-      pokemons: [{}],
-      description: '',
-      owner: {
-        name: '',
-        emai: '',
-        photo: '',
-      },
-    },
-  ];
+  const handleEditTeam = (id: string) => {
+    console.log('editTeam: ', id);
+  };
 
-  const _renderRegionCards = () => {
-    return regions.map((region, index) => {
-      const properCaseName = `${region.name[0].toUpperCase()}${region.name.slice(
+  const handleDeleteTeam = (id: number) => {
+    const filteredTeams = teams.filter(team => team.id !== id);
+    setTeamToDelete(-1);
+    setTeams(filteredTeams);
+  };
+
+  const _renderDeleteAlert = () => {
+    if (teamToDelete === -1) {
+      return null;
+    }
+
+    const _teamName = teams.find(team => team.id === teamToDelete)?.name ?? '';
+
+    return (
+      <CustomAlert
+        title={'Wait, this action is irrevesible!'}
+        text={`Are you sure you want to delete the team ${_teamName}?`}
+        onPress={() => handleDeleteTeam(teamToDelete)}
+        onCancel={() => setTeamToDelete(-1)}
+        isVisible
+      />
+    );
+  };
+
+  const _renderTeamCards = () => {
+    return teams.map((team, index) => {
+      const properCaseName = `${team.name[0].toUpperCase()}${team.name.slice(
         1,
       )}`;
 
       return (
-        <RegionCard
-          key={`${region.name}${index}`}
+        <TeamCard
+          key={`${team.name}${index}`}
+          id={team.id}
           name={properCaseName}
-          image={region.image}
-          url={region.url}
+          region={team.regionName}
+          onPressCard={() => console.log('onPressCard: ', team.regionName)}
+          onPressEdit={() => handleEditTeam(team.regionName)}
+          onPressDelete={() => setTeamToDelete(team.id)}
+          pokemonsCount={team.pokemons.length}
         />
       );
     });
@@ -78,26 +71,26 @@ export default function Teams() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#003A70'}}>
+      {_renderDeleteAlert()}
+
+      <Div
+        px="xl"
+        pb="lg"
+        row
+        justifyContent="space-between"
+        alignItems="center">
+        <CustomText variant="title" text="Pokemon Teams" />
+        <FilledButton
+          onPress={() => navigation.navigate(authRoutes.REGIONS)}
+          text="Agregar Equipo"
+          fontSize="sm"
+        />
+      </Div>
+
       <ScrollView>
         <Div px="xl" py="lg">
-          <Text
-            color="pokemonYellow"
-            fontSize="3xl"
-            fontWeight="bold"
-            textAlign="center">
-            Pokemon Teams
-          </Text>
-          <Text
-            color="pokemonYellow"
-            fontSize="md"
-            fontWeight="500"
-            textAlign="center"
-            fontStyle="italic">
-            Heeeey
-          </Text>
-
           <Div row flexWrap="wrap" pt="lg" justifyContent="space-around">
-            {_renderRegionCards()}
+            {_renderTeamCards()}
           </Div>
 
           <Div py="2xl" alignItems="center">
