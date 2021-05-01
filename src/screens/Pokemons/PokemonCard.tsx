@@ -60,31 +60,46 @@ export default function PokemonCard({
         </TouchableOpacity>
       ) : (
         <Div
-          row
           justifyContent="center"
           alignItems="center"
           bg={'pokemonLightBlue'}
-          w={150}
-          rounded="lg"
+          w={130}
           py="sm"
           my="lg">
-          <Text
-            pr="xs"
-            fontWeight="600"
-            color="white"
-            fontSize="lg"
-            textAlign="center">
-            {name}
-          </Text>
+          <Div row>
+            <Text
+              pr="xs"
+              fontWeight="600"
+              color="white"
+              fontSize="lg"
+              textAlign="center">
+              {name}
+            </Text>
 
-          <TouchableOpacity onPress={onPress}>
-            <Icon
-              name={'close'}
-              color={'white'}
-              fontFamily={'MaterialCommunityIcons'}
-              fontSize={20}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={onPress}>
+              <Icon
+                name={'close'}
+                color={'white'}
+                fontFamily={'MaterialCommunityIcons'}
+                fontSize={20}
+              />
+            </TouchableOpacity>
+          </Div>
+
+          <Div py="xs" />
+
+          <Image
+            w={50}
+            h={40}
+            source={{
+              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+            }}
+            defaultSource={defaultImg}
+          />
+
+          <Text pt="sm" fontWeight="300" color="gray400" fontSize="sm">
+            #{id}
+          </Text>
         </Div>
       )}
     </>
