@@ -1,20 +1,27 @@
 import * as React from 'react';
 
-import {SafeAreaView, ScrollView, ActivityIndicator} from 'react-native';
+import {ScrollView, ActivityIndicator} from 'react-native';
 import {Div} from 'react-native-magnus';
 
 import PokedexCard from './PokedexCard';
 import CustomText from '../../components/CustomText';
+import SafeContainer from '../../components/SafeContainer';
+import CustomAlert from '../../components/CustomAlert';
 
 import api from '../../api';
-import CustomAlert from '../../components/CustomAlert';
+import {useSharedState} from '../../store';
+
 import {authRoutes} from '../../constants/navigation';
 
+interface PokeDex {
+  name: string;
+  url: string;
+}
+
 export default function Pokedexs({navigation, route}: any) {
-  console.log('%c⧭ route', 'color: #1d3f73', route);
-  const [pokedexs, setPokedexs] = React.useState<
-    Array<{name: string; url: string}>
-  >([]);
+  const [, setState] = useSharedState();
+
+  const [pokedexs, setPokedexs] = React.useState<Array<PokeDex>>([]);
 
   const [isFetchError, setIsFetchError] = React.useState(false);
   const regionPath = route.params.regionPath;
@@ -54,8 +61,17 @@ export default function Pokedexs({navigation, route}: any) {
     );
   };
 
-  const handleSelectPokedex = (region: any) => {
-    const pokemonsPath = region.url.replace('https://pokeapi.co/api/v2/', '');
+  const handleSelectPokedex = (pokedex: PokeDex) => {
+    const pokemonsPath = pokedex.url.replace('https://pokeapi.co/api/v2/', '');
+
+    setState(prev => ({
+      ...prev,
+      pokeDex: {
+        name: pokedex.name,
+        id: parseInt(pokemonsPath, 10),
+      },
+    }));
+
     navigation.navigate(authRoutes.POKEMONS, {pokemonsPath});
   };
 
@@ -77,7 +93,7 @@ export default function Pokedexs({navigation, route}: any) {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#003A70'}}>
+    <SafeContainer>
       {_renderErrorAlert()}
       <ScrollView>
         <Div alignItems="center" px="xl" py="lg">
@@ -94,6 +110,6 @@ export default function Pokedexs({navigation, route}: any) {
           )}
         </Div>
       </ScrollView>
-    </SafeAreaView>
+    </SafeContainer>
   );
 }

@@ -30,6 +30,7 @@
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.1.1",
     "react-native-vector-icons": "^8.1.0",
+    "react-tracked": "^1.7.0",
     "validate-color": "^2.1.1",
     "zustand": "^3.4.2"
   },

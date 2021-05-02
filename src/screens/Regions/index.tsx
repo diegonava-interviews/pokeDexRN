@@ -1,19 +1,27 @@
 import * as React from 'react';
 
-import {SafeAreaView, ScrollView, ActivityIndicator} from 'react-native';
+import {ScrollView, ActivityIndicator} from 'react-native';
 import {Div} from 'react-native-magnus';
+
+import api from '../../api';
+import {useSharedState} from '../../store';
 
 import RegionCard from './RegionCard';
 import CustomText from '../../components/CustomText';
-
-import api from '../../api';
 import CustomAlert from '../../components/CustomAlert';
+import SafeContainer from '../../components/SafeContainer';
+
 import {authRoutes} from '../../constants/navigation';
 
+interface Region {
+  name: string;
+  url: string;
+}
+
 export default function Regions({navigation}: any) {
-  const [regions, setRegions] = React.useState<
-    Array<{name: string; url: string}>
-  >([]);
+  const [, setState] = useSharedState();
+
+  const [regions, setRegions] = React.useState<Array<Region>>([]);
 
   const [isFetchError, setIsFetchError] = React.useState(false);
 
@@ -52,8 +60,17 @@ export default function Regions({navigation}: any) {
     );
   };
 
-  const handleSelectRegion = (region: any) => {
+  const handleSelectRegion = (region: Region) => {
     const regionPath = region.url.replace('https://pokeapi.co/api/v2/', '');
+
+    setState(prev => ({
+      ...prev,
+      region: {
+        name: region.name,
+        id: parseInt(regionPath, 10),
+      },
+    }));
+
     navigation.navigate(authRoutes.POKEDEXS, {regionPath});
   };
 
@@ -74,7 +91,7 @@ export default function Regions({navigation}: any) {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#003A70'}}>
+    <SafeContainer>
       {_renderErrorAlert()}
       <ScrollView>
         <Div alignItems="center" px="xl" py="lg">
@@ -91,6 +108,6 @@ export default function Regions({navigation}: any) {
           )}
         </Div>
       </ScrollView>
-    </SafeAreaView>
+    </SafeContainer>
   );
 }

@@ -2,49 +2,53 @@ export default [
   {
     id: 1,
     name: 'Namek',
-    regionName: 'Kanto',
+    region: {
+      id: 1,
+      name: 'Kanto',
+    },
+    pokeDex: {
+      id: 1,
+      name: 'Kanto',
+    },
     pokemons: [],
   },
   {
     id: 2,
     name: 'Pelu',
-    regionName: 'Johto',
+    region: {
+      id: 2,
+      name: 'Johto',
+    },
+    pokeDex: {
+      id: 2,
+      name: 'Johto',
+    },
     pokemons: [],
   },
   {
     id: 3,
     name: 'Eldia',
-    regionName: 'Hoenn',
+    region: {
+      id: 3,
+      name: 'Hoeen',
+    },
+    pokeDex: {
+      id: 3,
+      name: 'Hoeen',
+    },
     pokemons: [],
   },
   {
     id: 4,
     name: 'Saya',
-    regionName: 'Sinnoh',
-    pokemons: [],
-  },
-  {
-    id: 5,
-    name: 'Namek',
-    regionName: 'Kanto',
-    pokemons: [],
-  },
-  {
-    id: 6,
-    name: 'Pelu',
-    regionName: 'Johto',
-    pokemons: [],
-  },
-  {
-    id: 7,
-    name: 'Eldia',
-    regionName: 'Hoenn',
-    pokemons: [],
-  },
-  {
-    id: 8,
-    name: 'Saya',
-    regionName: 'Sinnoh',
+    region: {
+      id: 4,
+      name: 'Saya',
+    },
+    pokeDex: {
+      id: 4,
+      name: 'Saya',
+    },
     pokemons: [],
   },
 ];

@@ -5,6 +5,7 @@ import FilledButton from '../../components/Button';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
+//TODO: Config is exposed because this is a test project, I didn't want to invest the time configuring .env files to complete other things
 GoogleSignin.configure({
   webClientId:
     '1017064912683-oclgj4quteqv2bs248gnjp2sceaok6ll.apps.googleusercontent.com',
@@ -19,10 +20,7 @@ export default function SignIn() {
 
   return (
     <Div
-      bgImg={{
-        uri:
-          'https://thumbs.dreamstime.com/b/pokemon-go-logo-wood-background-new-augmented-reality-game-lets-you-walk-real-world-to-catch-monsters-74496934.jpg',
-      }}
+      bgImg={require('./signInBackground.png')}
       flex={1}
       alignItems="center"
       justifyContent="center">

@@ -8,4 +8,5 @@ export const authRoutes = {
   TEAMS: 'Teams',
   POKEDEXS: 'Pokedexs',
   POKEMONS: 'Pokemons',
+  TEAM_DETAILS: 'TeamDetails',
 };

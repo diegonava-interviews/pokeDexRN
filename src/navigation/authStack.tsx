@@ -1,14 +1,20 @@
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {Div} from 'react-native-magnus';
+import auth from '@react-native-firebase/auth';
 
 import {authRoutes} from '../constants/navigation';
+
+import FilledButton from '../components/Button';
 
 import Regions from '../screens/Regions';
 import Teams from '../screens/Teams';
 import Pokedexs from '../screens/Pokedexs';
 import Pokemons from '../screens/Pokemons';
+import TeamDetails from '../screens/TeamDetails';
 
 import theme from '../theme';
+import IconButton from '../components/IconButton';
 
 const AuthStack = createStackNavigator();
 
@@ -27,14 +33,41 @@ const styledHeaderOptions = {
 };
 
 export default function AuthenticatedStack() {
+  const handleLogout = async () => {
+    auth().signOut();
+  };
+
   return (
     <AuthStack.Navigator initialRouteName={authRoutes.TEAMS}>
       <AuthStack.Screen
         name={authRoutes.TEAMS}
         component={Teams}
-        options={{
-          headerShown: false,
-        }}
+        options={({navigation}) => ({
+          ...styledHeaderOptions,
+          headerRight: () => (
+            <Div pr="md">
+              <FilledButton
+                buttonColor="pokemonDarkBlue"
+                textColor="red500"
+                onPress={handleLogout}
+                text="Logout"
+                fontSize="md"
+              />
+            </Div>
+          ),
+          headerLeft: () => (
+            <Div pl="2xl">
+              <IconButton
+                iconName="plus"
+                iconColor="white"
+                bgColor="pokemonLightBlue"
+                iconFamily="FontAwesome"
+                iconSize="sm"
+                onPress={() => navigation.navigate(authRoutes.REGIONS)}
+              />
+            </Div>
+          ),
+        })}
       />
       <AuthStack.Screen
         name={authRoutes.REGIONS}
@@ -49,6 +82,11 @@ export default function AuthenticatedStack() {
       <AuthStack.Screen
         name={authRoutes.POKEMONS}
         component={Pokemons}
+        options={styledHeaderOptions}
+      />
+      <AuthStack.Screen
+        name={authRoutes.TEAM_DETAILS}
+        component={TeamDetails}
         options={styledHeaderOptions}
       />
     </AuthStack.Navigator>

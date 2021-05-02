@@ -5482,6 +5482,11 @@ prop-types@^15.6.2, prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
+proxy-compare@1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/proxy-compare/-/proxy-compare-1.1.6.tgz#dd7737be611a9d7142fae10dbc6d0ceb74ad6da0"
+  integrity sha512-V65euKrKgKjVyEh5+4nVlAf4dHJ6Q0cF77MCeZiJaOldAl9lndy/u270SJneHiz3UkVcSIhxfOKY7aFkrMyo5g==
+
 psl@^1.1.28, psl@^1.1.33:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/psl/-/psl-1.8.0.tgz#9326f8bcfb013adcc005fdff056acce020e51c24"
@@ -5685,6 +5690,14 @@ react-test-renderer@17.0.1:
     react-is "^17.0.1"
     react-shallow-renderer "^16.13.1"
     scheduler "^0.20.1"
+
+react-tracked@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/react-tracked/-/react-tracked-1.7.0.tgz#3dce497898db5efd091c81971859929ad2d9d79d"
+  integrity sha512-XPCxh58+yw2PrxfDEJVM3zSStD/BdDSiL6D+ASvz3FGFLXptb3YLQnJggtiItWSpOyWCyrkCNW/cgOPpY2n1Rw==
+  dependencies:
+    proxy-compare "1.1.6"
+    use-context-selector "1.3.7"
 
 react@17.0.1:
   version "17.0.1"
@@ -6851,6 +6864,11 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
+
+use-context-selector@1.3.7:
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/use-context-selector/-/use-context-selector-1.3.7.tgz#4e59270baa73417dcb0c5c6c124359fd0e8b3aaf"
+  integrity sha512-O94hcN9UDAPTC4Fsm3p6Og5PVlhTEeKqxJX3HuBbVSuevOSPLDZxowFUmx49/fnu9jpgY83Nd3TALJVDRtYzdQ==
 
 use-subscription@^1.0.0:
   version "1.5.1"

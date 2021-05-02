@@ -1,22 +1,22 @@
 import * as React from 'react';
 
-import {
-  SafeAreaView,
-  ScrollView,
-  ActivityIndicator,
-  FlatList,
-} from 'react-native';
+import {ScrollView, ActivityIndicator, FlatList} from 'react-native';
 import {Div, Text, Icon} from 'react-native-magnus';
 
-import PokemonCard from './PokemonCard';
+import PokemonCard from '../../components/PokemonCard';
 import CustomText from '../../components/CustomText';
 
 import api from '../../api';
+import {useSharedState} from '../../store';
+
+import SafeContainer from '../../components/SafeContainer';
 import CustomAlert from '../../components/CustomAlert';
-import {authRoutes} from '../../constants/navigation';
 import FilledButton from '../../components/Button';
 
+import {authRoutes} from '../../constants/navigation';
+
 interface Pokemon {
+  id: number;
   isSelected?: boolean;
   entry_number: number;
   pokemon_species: {
@@ -26,8 +26,8 @@ interface Pokemon {
 }
 
 export default function Pokemons({navigation, route}: any) {
+  const [, setState] = useSharedState();
   const [pokemons, setPokemons] = React.useState<Array<Pokemon>>([]);
-
   const [selectedPokemons, setSelectedPokemons] = React.useState<
     Array<Pokemon>
   >([]);
@@ -59,10 +59,17 @@ export default function Pokemons({navigation, route}: any) {
         return setIsFetchError(true);
       }
 
-      const formatedPokemons = response.pokemon_entries.map((p: Pokemon) => ({
-        ...p,
-        isSelected: false,
-      }));
+      const formatedPokemons = response.pokemon_entries.map((p: Pokemon) => {
+        const pokemonId = p.pokemon_species.url
+          .replace('https://pokeapi.co/api/v2/pokemon-species/', '')
+          .slice(0, -1);
+
+        return {
+          ...p,
+          isSelected: false,
+          id: pokemonId,
+        };
+      });
 
       setPokemons(formatedPokemons);
       setIsFetchError(false);
@@ -88,8 +95,21 @@ export default function Pokemons({navigation, route}: any) {
     );
   };
 
+  const handleSavePokemons = () => {
+    const formatedSelectedPokemons = selectedPokemons.map(p => ({
+      id: p.id,
+      entry_number: p.entry_number,
+      pokemon_species: {
+        name: p.pokemon_species.name,
+        url: p.pokemon_species.url,
+      },
+    }));
+
+    setState(prev => ({...prev, pokemons: [...formatedSelectedPokemons]}));
+    navigation.navigate(authRoutes.TEAM_DETAILS);
+  };
+
   const handleAddPokemon = (pokemonToAdd: Pokemon) => {
-    // setPokemons([{...pokemonToAdd, isSelected: true}, ...pokemons]);
     setSelectedPokemons([pokemonToAdd, ...selectedPokemons]);
   };
 
@@ -102,10 +122,6 @@ export default function Pokemons({navigation, route}: any) {
   };
 
   const _handleRenderItem = ({item}: {item: Pokemon}) => {
-    const pokemonId = item.pokemon_species.url
-      .replace('https://pokeapi.co/api/v2/pokemon-species/', '')
-      .slice(0, -1);
-
     const isSelected = selectedPokemons.some(
       p => p.entry_number === item.entry_number,
     );
@@ -114,7 +130,7 @@ export default function Pokemons({navigation, route}: any) {
       <>
         <PokemonCard
           key={`${item.entry_number}`}
-          id={pokemonId}
+          id={item.id}
           name={item.pokemon_species.name}
           onPress={() => handleAddPokemon(item)}
           isSelected={isSelected}
@@ -131,7 +147,7 @@ export default function Pokemons({navigation, route}: any) {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#003A70'}}>
+    <SafeContainer>
       {_renderErrorAlert()}
 
       <Div alignItems="center" px="xl" pt="lg">
@@ -153,7 +169,7 @@ export default function Pokemons({navigation, route}: any) {
               <Div px="md" />
 
               <FilledButton
-                onPress={() => console.log('sads')}
+                onPress={handleSavePokemons}
                 text="Save Team"
                 fontSize="xs"
               />
@@ -164,16 +180,18 @@ export default function Pokemons({navigation, route}: any) {
         {selectedPokemons.length > 0 && (
           <>
             <ScrollView horizontal>
-              {selectedPokemons.map(p => (
-                <Div px="sm" key={`${p.entry_number}`}>
-                  <PokemonCard
-                    type="minicard"
-                    id={p.entry_number.toString()}
-                    name={p.pokemon_species.name}
-                    onPress={() => handleRemovePokemon(p)}
-                  />
-                </Div>
-              ))}
+              {selectedPokemons.map(p => {
+                return (
+                  <Div px="sm" key={`${p.entry_number}`}>
+                    <PokemonCard
+                      type="minicard"
+                      id={p.id}
+                      name={p.pokemon_species.name}
+                      onPress={() => handleRemovePokemon(p)}
+                    />
+                  </Div>
+                );
+              })}
             </ScrollView>
 
             <Icon
@@ -200,6 +218,6 @@ export default function Pokemons({navigation, route}: any) {
           <ActivityIndicator size="large" />
         </Div>
       )}
-    </SafeAreaView>
+    </SafeContainer>
   );
 }

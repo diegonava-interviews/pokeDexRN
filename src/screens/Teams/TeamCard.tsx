@@ -7,20 +7,18 @@ interface TeamCardProps {
   key: string;
   id: number;
   region: string;
+  pokeDex: string;
   name: string;
   pokemonsCount: number;
   onPressCard: () => void;
-  onPressEdit: () => void;
-  onPressDelete: () => void;
 }
 
 export default function TeamCard({
   id,
   name,
   region,
+  pokeDex,
   onPressCard,
-  onPressEdit,
-  onPressDelete,
   pokemonsCount,
 }: TeamCardProps) {
   return (
@@ -68,25 +66,24 @@ export default function TeamCard({
 
         <Div py="xs" />
 
+        <Div justifyContent="center" alignItems="center" row>
+          <Icon
+            name={'cards-outline'}
+            color={'white'}
+            fontFamily={'MaterialCommunityIcons'}
+            fontSize={'lg'}
+          />
+
+          <Text pl="xs" fontWeight="500" color="gray400" fontSize="md">
+            {pokeDex}
+          </Text>
+        </Div>
+
+        <Div py="md" />
+
         <Text pl="xs" fontWeight="500" color="gray400" fontSize="md">
           {pokemonsCount} Pokemons
         </Text>
-
-        <Div pt="xl" justifyContent="space-between" row>
-          <TouchableOpacity onPress={onPressEdit}>
-            <Div p="lg" bg="pokemonDarkBlue">
-              <Text color="white">Edit</Text>
-            </Div>
-          </TouchableOpacity>
-
-          <Div px="sm" />
-
-          <TouchableOpacity onPress={onPressDelete}>
-            <Div p="lg" bg="gray500">
-              <Text>Delete</Text>
-            </Div>
-          </TouchableOpacity>
-        </Div>
       </Div>
 
       <Div py="md" />
