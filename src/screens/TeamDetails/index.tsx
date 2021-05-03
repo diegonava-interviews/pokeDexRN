@@ -46,12 +46,7 @@ export default function TeamDetails({navigation, route}: any) {
             email: user.email,
           },
         })
-        .then(() =>
-          navigation.reset({
-            index: 0,
-            routes: [{name: authRoutes.TEAMS}],
-          }),
-        )
+        .then(() => navigation.popToTop())
         .catch(error =>
           Alert.alert(`There was an error saving your team - ${error}`),
         );
