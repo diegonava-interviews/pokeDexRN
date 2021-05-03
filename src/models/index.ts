@@ -10,6 +10,10 @@ export interface TeamInterface {
     name: string;
   };
   pokemons?: Array<{}>;
+  owner: {
+    uid: string;
+    email: string;
+  };
 }
 
 export const initialState: TeamInterface = {
@@ -22,5 +26,9 @@ export const initialState: TeamInterface = {
   pokeDex: {
     id: 0,
     name: '',
+  },
+  owner: {
+    uid: '',
+    email: '',
   },
 };

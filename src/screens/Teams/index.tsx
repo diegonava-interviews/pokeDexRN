@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {useListVals} from 'react-firebase-hooks/database';
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+import {useAuthState} from 'react-firebase-hooks/auth';
 
 import {ScrollView, Alert, ActivityIndicator} from 'react-native';
 import {Div} from 'react-native-magnus';
@@ -12,6 +14,8 @@ import SafeContainer from '../../components/SafeContainer';
 import {authRoutes} from '../../constants/navigation';
 
 export default function Teams({navigation}: any) {
+  const [user] = useAuthState(auth());
+
   const [snapshots, loading, error] = useListVals(database().ref('teams'));
 
   const handlePressCard = (team: TeamInterface) => {
@@ -22,6 +26,9 @@ export default function Teams({navigation}: any) {
 
   const _renderTeamCards = () => {
     return snapshots?.map((team: any, index) => {
+      if (team.owner.email !== user.email) {
+        return null;
+      }
       return (
         <TeamCard
           key={`${team.name}${index}`}

@@ -3,6 +3,8 @@ import * as React from 'react';
 import {ScrollView, Alert, TouchableOpacity} from 'react-native';
 import {Div, Icon, Text} from 'react-native-magnus';
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+import {useAuthState} from 'react-firebase-hooks/auth';
 
 import CustomText from '../../components/CustomText';
 import CustomInput from '../../components/CustomInput';
@@ -15,7 +17,10 @@ import FilledButton from '../../components/Button';
 
 export default function TeamDetails({navigation, route}: any) {
   const existingTeam = route?.params?.team ?? null;
+  console.log('%c⧭ existingTeam', 'color: #bfffc8', existingTeam);
   const [state] = useSharedState();
+
+  const [user] = useAuthState(auth());
 
   const initialTeamName = existingTeam ? existingTeam.name : '';
   const [teamName, setTeamName] = React.useState(initialTeamName);
@@ -24,7 +29,7 @@ export default function TeamDetails({navigation, route}: any) {
 
   const handleSaveTeam = () => {
     if (existingTeam) {
-      database()
+      return database()
         .ref(`/teams/${teamDetailsAccessKey.id}`)
         .update({
           name: teamName,
@@ -37,14 +42,20 @@ export default function TeamDetails({navigation, route}: any) {
             name: teamDetailsAccessKey.pokeDex.name,
           },
           pokemons: teamDetailsAccessKey.pokemons,
+          owner: {
+            uid: user.uid,
+            email: user.email,
+          },
         })
         .then(() =>
-          navigation.navigation.reset({
+          navigation.reset({
             index: 0,
             routes: [{name: authRoutes.TEAMS}],
           }),
         )
-        .catch(() => Alert.alert('There was an error saving your team'));
+        .catch(error =>
+          Alert.alert(`There was an error saving your team - ${error}`),
+        );
     }
 
     database()
@@ -61,6 +72,10 @@ export default function TeamDetails({navigation, route}: any) {
           name: teamDetailsAccessKey.pokeDex.name,
         },
         pokemons: teamDetailsAccessKey.pokemons,
+        owner: {
+          uid: user.uid,
+          email: user.email,
+        },
       })
       .then(() => navigation.popToTop())
       .catch(() => Alert.alert('There was an error saving your team'));
