@@ -2,7 +2,7 @@ import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import database from '@react-native-firebase/database';
-import {Alert} from 'react-native';
+import {Alert, StatusBar} from 'react-native';
 import {Div} from 'react-native-magnus';
 import auth from '@react-native-firebase/auth';
 
@@ -72,6 +72,7 @@ export default function AuthenticatedStack() {
   return (
     <>
       {handleShowDeleteAlert(teamToDelete)}
+      <StatusBar barStyle="light-content" />
       <AuthStack.Navigator initialRouteName={authRoutes.TEAMS}>
         <AuthStack.Screen
           name={authRoutes.TEAMS}

@@ -17,7 +17,6 @@ import FilledButton from '../../components/Button';
 
 export default function TeamDetails({navigation, route}: any) {
   const existingTeam = route?.params?.team ?? null;
-  console.log('%c⧭ existingTeam', 'color: #bfffc8', existingTeam);
   const [state] = useSharedState();
 
   const [user] = useAuthState(auth());
@@ -191,7 +190,7 @@ export default function TeamDetails({navigation, route}: any) {
           <Div pt="2xl" pb="md" alignItems="center">
             <CustomText
               variant="subtitle"
-              text={'Enter a name for your team (min 5 chars)'}
+              text={'Enter a name for your team (min 5 chars, max 15)'}
             />
           </Div>
 
@@ -203,7 +202,7 @@ export default function TeamDetails({navigation, route}: any) {
 
           <Div py="xl" alignItems="center">
             <FilledButton
-              isDisabled={teamName?.length < 5}
+              isDisabled={teamName?.length < 5 || teamName?.length > 15}
               onPress={handleSaveTeam}
               text={existingTeam ? 'Edit Team' : 'Save Team'}
               fontSize="lg"
