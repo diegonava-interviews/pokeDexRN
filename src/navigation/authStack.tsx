@@ -37,11 +37,14 @@ const styledHeaderOptions = {
 
 export default function AuthenticatedStack() {
   const handleLogout = async () => {
-    auth().signOut();
+    try {
+      auth().signOut();
+    } catch {
+      Alert.alert('There was an error logging out');
+    }
   };
 
   const handleDeleteTeam = (team: any, navigation: any) => {
-    console.log('%c⧭ team', 'color: #00b300', team);
     database()
       .ref(`/teams/${team.id}`)
       .set(null)

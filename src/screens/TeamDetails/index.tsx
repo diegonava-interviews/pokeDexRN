@@ -144,7 +144,7 @@ export default function TeamDetails({navigation, route}: any) {
                     <PokemonCard
                       id={p.id}
                       name={p?.pokemon_species.name}
-                      onPress={() => console.log('')}
+                      onPress={() => null}
                       fetchPokemonTypes
                       isSelected
                     />

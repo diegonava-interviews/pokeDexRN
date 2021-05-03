@@ -2,24 +2,19 @@ import * as React from 'react';
 import {useListVals} from 'react-firebase-hooks/database';
 import database from '@react-native-firebase/database';
 
-import {ScrollView} from 'react-native';
-import {Div} from 'react-native-magnus';
+import {ScrollView, Alert, ActivityIndicator} from 'react-native';
+import {Div, Text} from 'react-native-magnus';
 
 import {TeamInterface} from '../../models';
 import TeamCard from './TeamCard';
 import SafeContainer from '../../components/SafeContainer';
 
-// import teams from './data';
 import {authRoutes} from '../../constants/navigation';
 
 export default function Teams({navigation}: any) {
   const [snapshots, loading, error] = useListVals(database().ref('teams'));
 
-  console.log('%c⧭ error', 'color: #ff0000', error);
-  console.log('%c⧭ loading', 'color: #9c66cc', loading);
-  console.log('%c⧭ snapshots', 'color: #ace2e6', snapshots);
-
-  const handlePressCard = async (team: TeamInterface) => {
+  const handlePressCard = (team: TeamInterface) => {
     navigation.navigate(authRoutes.TEAM_DETAILS, {
       team,
     });
@@ -43,13 +38,24 @@ export default function Teams({navigation}: any) {
 
   return (
     <SafeContainer>
-      <ScrollView>
-        <Div px="xl" py="lg">
-          <Div row flexWrap="wrap" pt="lg" justifyContent="space-around">
-            {_renderTeamCards()}
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <ScrollView>
+          <Div px="xl" py="lg">
+            <Div row flexWrap="wrap" pt="lg" justifyContent="space-around">
+              {snapshots && !loading ? (
+                _renderTeamCards()
+              ) : (
+                <Div pt="3xl">
+                  {error && Alert.alert('There was an error getting the data')}
+                  <ActivityIndicator size="large" />
+                </Div>
+              )}
+            </Div>
           </Div>
-        </Div>
-      </ScrollView>
+        </ScrollView>
+      )}
     </SafeContainer>
   );
 }

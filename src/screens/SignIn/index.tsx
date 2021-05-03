@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {Div, Icon, Text} from 'react-native-magnus';
+import {Alert} from 'react-native';
 import FilledButton from '../../components/Button';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -13,9 +14,13 @@ GoogleSignin.configure({
 
 export default function SignIn() {
   const handleGoogleLogin = async () => {
-    const {idToken} = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    return auth().signInWithCredential(googleCredential);
+    try {
+      const {idToken} = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      auth().signInWithCredential(googleCredential);
+    } catch {
+      Alert.alert('There was and error trying to sign in, try again');
+    }
   };
 
   return (
