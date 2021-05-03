@@ -1,10 +1,16 @@
 import * as React from 'react';
 import {TouchableOpacity} from 'react-native';
-import defaultImg from './default.jpg';
 
 import api from '../../api';
 
-import {Div, Text, Image, Icon} from 'react-native-magnus';
+import {Div, Text, Icon} from 'react-native-magnus';
+import {
+  CardContainer,
+  MiniCardContainer,
+  CardNameText,
+  MiniCardNameText,
+  CardImage,
+} from './elements';
 
 interface PokemonCardProps {
   name: string;
@@ -64,40 +70,18 @@ export default function PokemonCard({
     <>
       {type === 'card' ? (
         <TouchableOpacity disabled={isSelected} onPress={onPress}>
-          <Div
-            justifyContent="center"
-            alignItems="center"
-            shadow="lg"
-            shadowColor="white"
-            bg={'pokemonLightBlue'}
-            opacity={isSelected ? 0.3 : 1}
-            w={100}
-            h={fetchPokemonTypes ? 270 : 'auto'}
-            rounded="lg"
-            py="lg"
-            my="lg">
+          <CardContainer
+            isSelected={isSelected}
+            fetchPokemonTypes={fetchPokemonTypes}>
             <Text pb="xs" fontWeight="300" color="gray400" fontSize="md">
               #{id}
             </Text>
 
-            <Text
-              fontWeight="600"
-              color="white"
-              fontSize="lg"
-              textAlign="center">
-              {name}
-            </Text>
+            <CardNameText>{name}</CardNameText>
 
             <Div pb="xs" />
 
-            <Image
-              w={100}
-              h={100}
-              source={{
-                uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-              }}
-              defaultSource={defaultImg}
-            />
+            <CardImage srcId={id} />
 
             {fetchPokemonTypes &&
               pokemonTypes.length > 0 &&
@@ -111,28 +95,12 @@ export default function PokemonCard({
                   {pokemonType.type.name}
                 </Text>
               ))}
-          </Div>
+          </CardContainer>
         </TouchableOpacity>
       ) : (
-        <Div
-          justifyContent="center"
-          alignItems="center"
-          bg={'pokemonLightBlue'}
-          w={130}
-          py="sm"
-          rounded="sm"
-          shadow="md"
-          shadowColor="white"
-          my="lg">
+        <MiniCardContainer>
           <Div row>
-            <Text
-              pr="xs"
-              fontWeight="600"
-              color="white"
-              fontSize="lg"
-              textAlign="center">
-              {name}
-            </Text>
+            <MiniCardNameText>{name}</MiniCardNameText>
 
             <TouchableOpacity onPress={onPress}>
               <Icon
@@ -146,19 +114,12 @@ export default function PokemonCard({
 
           <Div py="xs" />
 
-          <Image
-            w={50}
-            h={40}
-            source={{
-              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-            }}
-            defaultSource={defaultImg}
-          />
+          <CardImage smallImg srcId={id} />
 
           <Text pt="sm" fontWeight="300" color="gray400" fontSize="sm">
             #{id}
           </Text>
-        </Div>
+        </MiniCardContainer>
       )}
     </>
   );

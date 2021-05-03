@@ -15,15 +15,17 @@ import FilledButton from '../../components/Button';
 export default function TeamDetails({navigation, route}: any) {
   const existingTeam = route?.params?.team ?? null;
   const [state] = useSharedState();
-  console.log('%c⧭ state', 'color: #ff6600', state);
-  console.log('%c⧭existingTeam', 'color: #00736b', existingTeam);
+
+  // console.log('%c⧭ state', 'color: #ff6600', state);
+  // console.log('%c⧭existingTeam', 'color: #00736b', existingTeam);
+
   const initialTeamName = existingTeam ? existingTeam.name : '';
   const [teamName, setTeamName] = React.useState(initialTeamName);
 
   const teamDetailsAccessKey = existingTeam ? existingTeam : state;
 
   const handleSaveTeam = () => {
-    console.log('handleaSaveTeam: ', 'teamName');
+    // console.log('handleaSaveTeam: ', 'teamName');
     navigation.replace(authRoutes.TEAMS);
   };
 
@@ -66,7 +68,7 @@ export default function TeamDetails({navigation, route}: any) {
             />
           </Div>
           <ScrollView horizontal>
-            {teamDetailsAccessKey.pokemons.map(p => {
+            {teamDetailsAccessKey.pokemons.map((p: any) => {
               return (
                 <Div px="lg" key={`${p?.entry_number ?? ''}`}>
                   <PokemonCard

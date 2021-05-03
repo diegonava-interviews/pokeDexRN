@@ -5,3 +5,5 @@ export default {
     pokemonDarkBlue: '#003A70',
   },
 };
+
+//TODO: TextStyles are pending - Leave it pending to finish the app

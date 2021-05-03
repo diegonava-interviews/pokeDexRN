@@ -10,13 +10,6 @@ interface CustomTextPropsType {
 export default function CustomText({text, variant}: CustomTextPropsType) {
   const handleSetVariantStyle = (variantName: string) => {
     switch (variantName) {
-      case 'title':
-        return {
-          color: 'pokemonYellow',
-          fontSize: '3xl',
-          fontWeight: 'bold',
-          fontStyle: 'normal',
-        };
       case 'subtitle':
         return {
           color: 'pokemonYellow',
