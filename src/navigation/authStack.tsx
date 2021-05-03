@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {useNavigation} from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import {Alert} from 'react-native';
 import {Div} from 'react-native-magnus';
@@ -16,27 +17,20 @@ import Pokedexs from '../screens/Pokedexs';
 import Pokemons from '../screens/Pokemons';
 import TeamDetails from '../screens/TeamDetails';
 
-import theme from '../theme';
+import styledHeaderOptions from './headerConfig';
 import IconButton from '../components/IconButton';
+import CustomAlert from '../components/CustomAlert';
 
 const AuthStack = createStackNavigator();
 
-const styledHeaderOptions = {
-  headerRight: () => null,
-  headerTitleStyle: {
-    color: theme.colors.pokemonYellow,
-    fontSize: 24,
-  },
-  headerBackTitleVisible: false,
-  headerTintColor: 'lightgray',
-  headerStyle: {
-    backgroundColor: theme.colors.pokemonDarkBlue,
-    shadowOffset: {height: 0, width: 0},
-  },
-};
-
 export default function AuthenticatedStack() {
+  const [showDeleteAlert, setShowDeleteAlert] = React.useState(false);
+  const [teamToDelete, setTeamToDelete] = React.useState(-1);
+
+  const navigation = useNavigation();
+
   const handleLogout = async () => {
+    //TODO: Fix navigation animation
     try {
       auth().signOut();
     } catch {
@@ -44,7 +38,25 @@ export default function AuthenticatedStack() {
     }
   };
 
-  const handleDeleteTeam = (team: any, navigation: any) => {
+  const handleShowDeleteAlert = (team?: any) => {
+    if (!showDeleteAlert) {
+      return null;
+    }
+
+    return (
+      <CustomAlert
+        title={'Wait, this action is irrevesible!'}
+        text={`Are you sure you want to delete the team ${team.name}?`}
+        onPress={() => handleDeleteTeam(team)}
+        onCancel={() => setShowDeleteAlert(false)}
+        isVisible
+      />
+    );
+  };
+
+  const handleDeleteTeam = (team: any) => {
+    setShowDeleteAlert(false);
+
     database()
       .ref(`/teams/${team.id}`)
       .set(null)
@@ -52,78 +64,84 @@ export default function AuthenticatedStack() {
       .catch(() => Alert.alert('There was an error deleting your team'));
   };
 
-  return (
-    <AuthStack.Navigator initialRouteName={authRoutes.TEAMS}>
-      <AuthStack.Screen
-        name={authRoutes.TEAMS}
-        component={Teams}
-        options={({navigation}) => ({
-          ...styledHeaderOptions,
-          headerRight: () => (
-            <Div pr="md">
-              <FilledButton
-                buttonColor="pokemonDarkBlue"
-                textColor="red500"
-                onPress={handleLogout}
-                text="Logout"
-                fontSize="md"
-              />
-            </Div>
-          ),
-          headerLeft: () => (
-            <Div pl="2xl">
-              <IconButton
-                iconName="plus"
-                iconColor="white"
-                bgColor="pokemonLightBlue"
-                iconFamily="FontAwesome"
-                iconSize="sm"
-                onPress={() => navigation.navigate(authRoutes.REGIONS)}
-              />
-            </Div>
-          ),
-        })}
-      />
+  const handleDeletePress = (teamInDeletion: any) => {
+    setShowDeleteAlert(true);
+    setTeamToDelete(teamInDeletion);
+  };
 
-      <AuthStack.Screen
-        name={authRoutes.REGIONS}
-        component={Regions}
-        options={{...styledHeaderOptions}}
-      />
-      <AuthStack.Screen
-        name={authRoutes.POKEDEXS}
-        component={Pokedexs}
-        options={{...styledHeaderOptions}}
-      />
-      <AuthStack.Screen
-        name={authRoutes.POKEMONS}
-        component={Pokemons}
-        options={{...styledHeaderOptions}}
-      />
-      <AuthStack.Screen
-        name={authRoutes.TEAM_DETAILS}
-        component={TeamDetails}
-        options={({navigation, route}: any) => ({
-          ...styledHeaderOptions,
-          headerRight: route.params.team
-            ? () => {
-                return (
-                  <Div pr="md">
-                    <FilledButton
-                      buttonColor="pokemonDarkBlue"
-                      textColor="red500"
-                      onPress={() =>
-                        handleDeleteTeam(route.params.team, navigation)
-                      }
-                      text="Delete"
-                      fontSize="md"
-                    />
-                  </Div>
-                );
-              }
-            : () => null,
-        })}
-      />
-    </AuthStack.Navigator>
+  return (
+    <>
+      {handleShowDeleteAlert(teamToDelete)}
+      <AuthStack.Navigator initialRouteName={authRoutes.TEAMS}>
+        <AuthStack.Screen
+          name={authRoutes.TEAMS}
+          component={Teams}
+          options={{
+            ...styledHeaderOptions,
+            headerRight: () => (
+              <Div pr="md">
+                <FilledButton
+                  buttonColor="pokemonDarkBlue"
+                  textColor="red500"
+                  onPress={handleLogout}
+                  text="Logout"
+                  fontSize="md"
+                />
+              </Div>
+            ),
+            headerLeft: () => (
+              <Div pl="2xl">
+                <IconButton
+                  iconName="plus"
+                  iconColor="white"
+                  bgColor="pokemonLightBlue"
+                  iconFamily="FontAwesome"
+                  iconSize="sm"
+                  onPress={() => navigation.navigate(authRoutes.REGIONS)}
+                />
+              </Div>
+            ),
+          }}
+        />
+
+        <AuthStack.Screen
+          name={authRoutes.REGIONS}
+          component={Regions}
+          options={{...styledHeaderOptions}}
+        />
+        <AuthStack.Screen
+          name={authRoutes.POKEDEXS}
+          component={Pokedexs}
+          options={{...styledHeaderOptions}}
+        />
+        <AuthStack.Screen
+          name={authRoutes.POKEMONS}
+          component={Pokemons}
+          options={{...styledHeaderOptions}}
+        />
+        <AuthStack.Screen
+          name={authRoutes.TEAM_DETAILS}
+          component={TeamDetails}
+          options={({route}: any) => ({
+            ...styledHeaderOptions,
+            headerRight: route.params.team
+              ? () => {
+                  return (
+                    <Div pr="md">
+                      <FilledButton
+                        buttonColor="pokemonDarkBlue"
+                        textColor="red500"
+                        onPress={() => handleDeletePress(route.params.team)}
+                        text="Delete"
+                        fontSize="md"
+                      />
+                    </Div>
+                  );
+                }
+              : () => null,
+          })}
+        />
+      </AuthStack.Navigator>
+    </>
   );
 }

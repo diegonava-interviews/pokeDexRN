@@ -3,7 +3,7 @@ import {useListVals} from 'react-firebase-hooks/database';
 import database from '@react-native-firebase/database';
 
 import {ScrollView, Alert, ActivityIndicator} from 'react-native';
-import {Div, Text} from 'react-native-magnus';
+import {Div} from 'react-native-magnus';
 
 import {TeamInterface} from '../../models';
 import TeamCard from './TeamCard';

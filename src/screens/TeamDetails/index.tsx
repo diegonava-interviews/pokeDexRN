@@ -199,32 +199,3 @@ export default function TeamDetails({navigation, route}: any) {
     </SafeContainer>
   );
 }
-
-// const [teamToDelete, setTeamToDelete] = React.useState(-1);
-
-// const handleDeleteTeam = (id: number) => {
-//   const filteredTeams = teams.filter(team => team.id !== id);
-//   setTeamToDelete(-1);
-//   setTeams(filteredTeams);
-// };
-
-// const _renderDeleteAlert = () => {
-//   if (teamToDelete === -1) {
-//     return null;
-//   }
-
-//   const _teamName = teams.find(team => team.id === teamToDelete)?.name ?? '';
-
-//   return (
-//     <CustomAlert
-//       title={'Wait, this action is irrevesible!'}
-//       text={`Are you sure you want to delete the team ${_teamName}?`}
-//       onPress={() => handleDeleteTeam(teamToDelete)}
-//       onCancel={() => setTeamToDelete(-1)}
-//       isVisible
-//     />
-//   );
-// };
-
-// on render
-// {_renderDeleteAlert()}
