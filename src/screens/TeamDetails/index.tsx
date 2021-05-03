@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import {ScrollView} from 'react-native';
+import {ScrollView, Alert, TouchableOpacity} from 'react-native';
 import {Div, Icon, Text} from 'react-native-magnus';
+import database from '@react-native-firebase/database';
 
 import CustomText from '../../components/CustomText';
 import CustomInput from '../../components/CustomInput';
@@ -16,70 +17,140 @@ export default function TeamDetails({navigation, route}: any) {
   const existingTeam = route?.params?.team ?? null;
   const [state] = useSharedState();
 
-  // console.log('%c⧭ state', 'color: #ff6600', state);
-  // console.log('%c⧭existingTeam', 'color: #00736b', existingTeam);
-
   const initialTeamName = existingTeam ? existingTeam.name : '';
   const [teamName, setTeamName] = React.useState(initialTeamName);
 
   const teamDetailsAccessKey = existingTeam ? existingTeam : state;
 
   const handleSaveTeam = () => {
-    // console.log('handleaSaveTeam: ', 'teamName');
-    navigation.replace(authRoutes.TEAMS);
+    if (existingTeam) {
+      database()
+        .ref(`/teams/${teamDetailsAccessKey.id}`)
+        .update({
+          name: teamName,
+          region: {
+            id: teamDetailsAccessKey.region.id,
+            name: teamDetailsAccessKey.region.name,
+          },
+          pokeDex: {
+            id: teamDetailsAccessKey.pokeDex.id,
+            name: teamDetailsAccessKey.pokeDex.name,
+          },
+          pokemons: teamDetailsAccessKey.pokemons,
+        })
+        .then(() =>
+          navigation.navigation.reset({
+            index: 0,
+            routes: [{name: authRoutes.TEAMS}],
+          }),
+        )
+        .catch(() => Alert.alert('There was an error saving your team'));
+    }
+
+    database()
+      .ref(`/teams/${teamDetailsAccessKey.id}`)
+      .set({
+        id: teamDetailsAccessKey.id,
+        name: teamName,
+        region: {
+          id: teamDetailsAccessKey.region.id,
+          name: teamDetailsAccessKey.region.name,
+        },
+        pokeDex: {
+          id: teamDetailsAccessKey.pokeDex.id,
+          name: teamDetailsAccessKey.pokeDex.name,
+        },
+        pokemons: teamDetailsAccessKey.pokemons,
+      })
+      .then(() => navigation.popToTop())
+      .catch(() => Alert.alert('There was an error saving your team'));
   };
 
   return (
     <SafeContainer>
       <ScrollView>
-        <Div pb="md" alignItems="center">
+        <Div px="xl" pb="md" alignItems="center">
           <CustomText
             variant="subtitle"
-            text="This is the overview of your selections"
+            text={
+              existingTeam
+                ? 'Click on "Region", "Pokedex" or "Edit Pokemons" Buttons to edit your team'
+                : 'This is the overview of your selections'
+            }
           />
-          <CustomText
-            variant="subtitle"
-            text="If you want to change something, go back"
-          />
+          {!existingTeam && (
+            <CustomText
+              variant="subtitle"
+              text="If you want to change something, go back"
+            />
+          )}
         </Div>
         <Div px="xl" py="lg">
           <Div pb="lg" justifyContent="space-evenly" row>
-            <Div w={150} alignItems="center" p={12} bg="pokemonLightBlue">
-              <Text color="white">Region: </Text>
-              <Text fontSize="xl" fontWeight="600" pt="md" color="white">
-                {teamDetailsAccessKey.region.name}
-              </Text>
-            </Div>
+            <TouchableOpacity
+              disabled={!existingTeam ? true : false}
+              onPress={() =>
+                navigation.navigate(authRoutes.REGIONS, {isExistingTeam: true})
+              }>
+              <Div
+                shadow={existingTeam ? 'lg' : 'sm'}
+                shadowColor="white"
+                w={150}
+                alignItems="center"
+                p={12}
+                bg="pokemonLightBlue">
+                <Text color="white">Region: </Text>
+                <Text fontSize="xl" fontWeight="600" pt="md" color="white">
+                  {teamDetailsAccessKey.region.name}
+                </Text>
+              </Div>
+            </TouchableOpacity>
 
             <Div px="md" />
 
-            <Div w={150} alignItems="center" p={12} bg="pokemonLightBlue">
-              <Text color="white">Pokedex: </Text>
-              <Text fontSize="xl" fontWeight="600" pt="md" color="white">
-                {teamDetailsAccessKey.pokeDex.name}
-              </Text>
-            </Div>
+            <TouchableOpacity
+              disabled={!existingTeam ? true : false}
+              onPress={() =>
+                navigation.navigate(authRoutes.POKEDEXS, {
+                  regionId: teamDetailsAccessKey.pokeDex.id,
+                })
+              }>
+              <Div
+                shadow={existingTeam ? 'lg' : 'sm'}
+                shadowColor="white"
+                w={150}
+                alignItems="center"
+                p={12}
+                bg="pokemonLightBlue">
+                <Text color="white">Pokedex: </Text>
+                <Text fontSize="xl" fontWeight="600" pt="md" color="white">
+                  {teamDetailsAccessKey.pokeDex.name}
+                </Text>
+              </Div>
+            </TouchableOpacity>
           </Div>
 
           <Div pt="lg" alignItems="center">
             <CustomText
               variant="subtitle"
-              text={`${teamDetailsAccessKey.pokemons.length} Pokemons`}
+              text={`${teamDetailsAccessKey?.pokemons?.length ?? 0} Pokemons`}
             />
           </Div>
           <ScrollView horizontal>
-            {teamDetailsAccessKey.pokemons.map((p: any) => {
-              return (
-                <Div px="lg" key={`${p?.entry_number ?? ''}`}>
-                  <PokemonCard
-                    id={p.id}
-                    name={p?.pokemon_species.name}
-                    onPress={() => console.log('')}
-                    fetchPokemonTypes
-                  />
-                </Div>
-              );
-            })}
+            {teamDetailsAccessKey?.pokemons?.length > 0 &&
+              teamDetailsAccessKey.pokemons.map((p: any) => {
+                return (
+                  <Div px="lg" key={`${p?.entry_number ?? ''}`}>
+                    <PokemonCard
+                      id={p.id}
+                      name={p?.pokemon_species.name}
+                      onPress={() => console.log('')}
+                      fetchPokemonTypes
+                      isSelected
+                    />
+                  </Div>
+                );
+              })}
           </ScrollView>
           <Icon
             name={'arrow-left-right'}
@@ -87,8 +158,22 @@ export default function TeamDetails({navigation, route}: any) {
             fontFamily={'MaterialCommunityIcons'}
             fontSize={20}
           />
+          {existingTeam && (
+            <Div pt="sm" alignItems="center">
+              <FilledButton
+                onPress={() =>
+                  navigation.navigate(authRoutes.POKEMONS, {
+                    pokedexId: teamDetailsAccessKey.pokeDex.id,
+                    selectedPokemons: teamDetailsAccessKey.pokemons,
+                  })
+                }
+                text={'Edit Pokemons'}
+                fontSize="lg"
+              />
+            </Div>
+          )}
 
-          <Div pt="3xl" pb="md" alignItems="center">
+          <Div pt="2xl" pb="md" alignItems="center">
             <CustomText
               variant="subtitle"
               text={'Enter a name for your team (min 5 chars)'}

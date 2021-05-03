@@ -31,7 +31,8 @@ export default function TeamCard({
         shadowColor="white"
         bg="pokemonLightBlue"
         w={150}
-        p="lg">
+        p="lg"
+        my="xs">
         <Text pb="xs" fontWeight="300" color="gray400" fontSize="md">
           #{id}
         </Text>
@@ -64,20 +65,15 @@ export default function TeamCard({
           </Text>
         </Div>
 
-        <Div py="xs" />
+        <Div py="md" />
 
-        <Div justifyContent="center" alignItems="center" row>
-          <Icon
-            name={'cards-outline'}
-            color={'white'}
-            fontFamily={'MaterialCommunityIcons'}
-            fontSize={'lg'}
-          />
+        <Text pl="xs" fontWeight="700" color="gray400" fontSize="md">
+          Deck:
+        </Text>
 
-          <Text pl="xs" fontWeight="500" color="gray400" fontSize="md">
-            {pokeDex}
-          </Text>
-        </Div>
+        <Text pl="xs" fontWeight="500" color="gray400" fontSize="md">
+          {pokeDex}
+        </Text>
 
         <Div py="md" />
 

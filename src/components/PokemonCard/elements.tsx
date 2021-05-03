@@ -39,7 +39,7 @@ export function CardContainer({
       shadow="lg"
       shadowColor="white"
       bg={'pokemonLightBlue'}
-      opacity={isSelected ? 0.3 : 1}
+      opacity={isSelected && !fetchPokemonTypes ? 0.3 : 1}
       w={100}
       h={fetchPokemonTypes ? 270 : 'auto'}
       rounded="lg"

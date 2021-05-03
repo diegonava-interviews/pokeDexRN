@@ -24,12 +24,12 @@ export default function Pokedexs({navigation, route}: any) {
   const [pokedexs, setPokedexs] = React.useState<Array<PokeDex>>([]);
 
   const [isFetchError, setIsFetchError] = React.useState(false);
-  const regionPath = route.params.regionPath;
+  const regionId = route.params.regionId;
 
   const handleGetPokeDexs = async () => {
     try {
       const response = await api({
-        path: regionPath,
+        path: `region/${regionId}`,
         method: 'GET',
       });
 
@@ -62,17 +62,20 @@ export default function Pokedexs({navigation, route}: any) {
   };
 
   const handleSelectPokedex = (pokedex: PokeDex) => {
-    const pokemonsPath = pokedex.url.replace('https://pokeapi.co/api/v2/', '');
+    const pokedexId = parseInt(
+      pokedex.url.replace('https://pokeapi.co/api/v2/pokedex/', '').slice(0, 1),
+      10,
+    );
 
     setState(prev => ({
       ...prev,
       pokeDex: {
         name: pokedex.name,
-        id: parseInt(pokemonsPath, 10),
+        id: pokedexId,
       },
     }));
 
-    navigation.navigate(authRoutes.POKEMONS, {pokemonsPath});
+    navigation.navigate(authRoutes.POKEMONS, {pokedexId});
   };
 
   const _renderPokedexCards = () => {

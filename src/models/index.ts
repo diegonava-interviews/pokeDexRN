@@ -9,7 +9,7 @@ export interface TeamInterface {
     id: number;
     name: string;
   };
-  pokemons: Array<{}>;
+  pokemons?: Array<{}>;
 }
 
 export const initialState: TeamInterface = {
@@ -23,5 +23,4 @@ export const initialState: TeamInterface = {
     id: 0,
     name: '',
   },
-  pokemons: [],
 };

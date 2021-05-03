@@ -26,11 +26,13 @@ interface Pokemon {
 }
 
 export default function Pokemons({navigation, route}: any) {
+  const alreadySelectedPokemons = route?.params?.selectedPokemons ?? [];
+
   const [, setState] = useSharedState();
   const [pokemons, setPokemons] = React.useState<Array<Pokemon>>([]);
   const [selectedPokemons, setSelectedPokemons] = React.useState<
     Array<Pokemon>
-  >([]);
+  >(alreadySelectedPokemons);
 
   const pokemonsCounter = selectedPokemons.length;
 
@@ -46,12 +48,12 @@ export default function Pokemons({navigation, route}: any) {
   const isSaveButtonShown = pokemonColor === 'green300' ? true : false;
 
   const [isFetchError, setIsFetchError] = React.useState(false);
-  const pokemonsPath = route.params.pokemonsPath;
+  const pokedexId = route.params.pokedexId;
 
   const handleGetPokemons = async () => {
     try {
       const response = await api({
-        path: pokemonsPath,
+        path: `/pokedex/${pokedexId}`,
         method: 'GET',
       });
 
@@ -106,7 +108,7 @@ export default function Pokemons({navigation, route}: any) {
     }));
 
     setState(prev => ({...prev, pokemons: [...formatedSelectedPokemons]}));
-    navigation.navigate(authRoutes.TEAM_DETAILS);
+    navigation.push(authRoutes.TEAM_DETAILS, {team: null});
   };
 
   const handleAddPokemon = (pokemonToAdd: Pokemon) => {

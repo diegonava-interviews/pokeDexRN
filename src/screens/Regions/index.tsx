@@ -18,12 +18,14 @@ interface Region {
   url: string;
 }
 
-export default function Regions({navigation}: any) {
+export default function Regions({navigation, route}: any) {
   const [, setState] = useSharedState();
 
   const [regions, setRegions] = React.useState<Array<Region>>([]);
 
   const [isFetchError, setIsFetchError] = React.useState(false);
+
+  const isExistingTeam = route?.params?.isExistingTeam ?? null;
 
   const handleGetRegions = async () => {
     try {
@@ -61,17 +63,23 @@ export default function Regions({navigation}: any) {
   };
 
   const handleSelectRegion = (region: Region) => {
-    const regionPath = region.url.replace('https://pokeapi.co/api/v2/', '');
+    const regionId = parseInt(
+      region.url.replace('https://pokeapi.co/api/v2/region/', '').slice(0, 1),
+      10,
+    );
 
     setState(prev => ({
       ...prev,
+      id: isExistingTeam ? prev.id : Date.now(),
       region: {
         name: region.name,
-        id: parseInt(regionPath, 10),
+        id: regionId,
       },
     }));
 
-    navigation.navigate(authRoutes.POKEDEXS, {regionPath});
+    navigation.navigate(authRoutes.POKEDEXS, {
+      regionId,
+    });
   };
 
   const _renderRegionCards = () => {
