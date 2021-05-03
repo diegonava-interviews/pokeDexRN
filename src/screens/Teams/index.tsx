@@ -25,8 +25,12 @@ export default function Teams({navigation}: any) {
   };
 
   const _renderTeamCards = () => {
+    if (!user) {
+      return null;
+    }
+
     return snapshots?.map((team: any, index) => {
-      if (team.owner.email !== user.email) {
+      if (team?.owner?.email !== user?.email) {
         return null;
       }
       return (
