@@ -11,3 +11,4 @@ In order to run this project
 2. Install node dependencies running *yarn* on terminal
 3. Install pods running on terminal *npx pod-install*
 4. Run project with *yarn start*
+5. Run the project on iOS simulator with *yarn run ios*
