@@ -6,6 +6,7 @@ I am missing the extra points, I had a busy schedule to complete the challenge, 
 
 This project is just configured to run in iOS (for now)
 
+In order to run this project
 1. Clone project
 2. Install node dependencies running *yarn* on terminal
 3. Install pods running on terminal *npx pod-install*
